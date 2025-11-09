@@ -1,7 +1,5 @@
 import random
-import csv
-import io  # Used here to simulate reading from a file path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict
 from spelling_bee_utils import *
 
 
