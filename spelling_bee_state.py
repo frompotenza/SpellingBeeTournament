@@ -153,21 +153,6 @@ class SpellingBeeGame:
 
         return next_word
 
-    def player_disconnect(self, player_id):
-        """
-        Handles a fail-stop event by marking a player as inactive.
-        The leader continues the game with the remaining active peers.
-        """
-        if player_id in self.players:
-            self.players[player_id]["is_active"] = False
-            print(
-                f"Player {player_id} has disconnected/crashed (Fail-Stop). Marked as inactive."
-            )
-
-    def disconnect_all_players(self):
-        for player_id in self.players:
-            self.player_disconnect(player_id)
-
     def get_scoreboard(self):
         """
         Returns the current scoreboard, sorted by score.
@@ -180,6 +165,40 @@ class SpellingBeeGame:
         # Sort by score in descending order
         scoreboard.sort(key=lambda x: x["score"], reverse=True)
         return scoreboard
+
+    def player_connect(self, player_id):
+        """
+        Handles a reconnect event by marking a player as active and
+        allowing them to continue playing.
+        Allows new players to join mid-game.
+        """
+        if player_id in self.players:
+            self.players[player_id]["is_active"] = True
+            print(f"Player {player_id} has reconnected. Marked as active.")
+        else:
+            self.players[player_id] = {
+                "score": 0,
+                "is_active": True,
+                "last_answer": None,
+            }
+            self.num_players += 1
+            print(f"New player {player_id} has joined the game.")
+
+    def player_disconnect(self, player_id):
+        """
+        Handles a fail-stop event by marking a player as inactive.
+        The leader continues the game with the remaining active peers.
+        """
+        if player_id in self.players:
+            self.players[player_id]["is_active"] = False
+            print(
+                f"Player {player_id} has disconnected/crashed (Fail-Stop). Marked as inactive."
+            )
+
+    def disconnect_all_players(self):
+        """Disconnects all players from the game."""
+        for player_id in self.players:
+            self.player_disconnect(player_id)
 
 
 # --- Example Usage (Demonstrates how a Leader would use this class) ---
