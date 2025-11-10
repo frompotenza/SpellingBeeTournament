@@ -76,7 +76,7 @@ class SpellingBeeGame:
         self.players[player_id]["last_answer"] = expected
         return is_correct, delta
 
-    def get_scoreboard(self):
+    def get_scoreboard(self) -> List[Dict[str, int]]:
         """Returns the current scoreboard, sorted by score."""
         scoreboard = [
             {"player_id": pid, "score": data["score"]}
@@ -85,7 +85,7 @@ class SpellingBeeGame:
 
         return sorted(scoreboard, key=lambda x: x["score"], reverse=True)
 
-    def send_word_to_players(self, current_word):
+    def send_word_to_players(self, current_word) -> None:
         """Sends the current word to active players."""
         # @TO-DO: Implement reliable multicast to send the word
         # start a timer
@@ -98,7 +98,7 @@ class SpellingBeeGame:
                 self.process_answer(player_id, response)
                 # else: disconnect player
 
-    def player_connect(self, player_id: str):
+    def player_connect(self, player_id: str) -> None:
         """Adds or reactivates a player."""
         if player_id not in self.players:
             self.players[player_id] = {
@@ -109,12 +109,12 @@ class SpellingBeeGame:
         else:
             self.players[player_id]["is_active"] = True
 
-    def player_disconnect(self, player_id: str):
+    def player_disconnect(self, player_id: str) -> None:
         """Marks a player as inactive."""
         if player_id in self.players:
             self.players[player_id]["is_active"] = False
 
-    def disconnect_all_players(self):
+    def disconnect_all_players(self) -> None:
         """Disconnects all players."""
         for pid in self.players:
             self.players[pid]["is_active"] = False
