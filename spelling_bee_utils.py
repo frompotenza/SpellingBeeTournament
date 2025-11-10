@@ -1,49 +1,26 @@
 import csv
-import io
+import os
 from typing import List
 
-# --- Word Loading Configuration and Logic ---
 
-# Define the expected path to the word list CSV file.
-WORD_FILEPATH = "./words.csv"
-
-
-def load_words_from_csv():
-    """
-    Loads a list of words from a CSV file, expecting one word per row
-    in the first column (after the header).
-
-    Args:
-        filepath: The path to the CSV file.
-
-    Returns:
-        A list of cleaned, non-empty words.
-    """
-    words = []
-    print(f"Attempting to load words from: {WORD_FILEPATH}")
-
-    try:
-        reader = csv.reader(WORD_FILEPATH)
-
-        for row in reader:
-            if row:
-                word = row[0].strip().lower()
-                if word:
-                    words.append(word)
-    except Exception as e:
-        print(f"An error occurred while parsing the CSV: {e}. Returning empty list.")
+def load_words_from_csv(file_path: str = "words.csv") -> List[str]:
+    """Load words from a CSV file (one word per line)."""
+    if not os.path.exists(file_path):
+        print(f"CSV file not found: {file_path}")
         return []
 
-    print(f"Successfully loaded {len(words)} words.")
+    with open(file_path, newline="", encoding="utf-8") as csvfile:
+        reader = csv.reader(csvfile)
+        # Read the first row only
+        row = next(reader, [])
+        # Strip spaces from each word
+        words = [word.strip() for word in row if word.strip()]
     return words
 
 
-def is_correct_spelling(expected_word, player_answer):
-    """
-    A simple validation function that checks if the player's answer
-    matches the expected word (case and whitespace insensitive).
-    """
-    return expected_word.lower() == player_answer.strip().lower()
+def is_correct_spelling(expected: str, answer: str) -> bool:
+    """Check if the player's answer is correct (case-insensitive)."""
+    return expected.lower() == answer.strip().lower()
 
 
 def get_connected_players():
